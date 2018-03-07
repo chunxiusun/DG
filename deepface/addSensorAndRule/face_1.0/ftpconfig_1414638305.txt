@@ -1,0 +1,40 @@
+{
+    "InputSlice": [
+        {
+            "ConfigType": 3,
+            "ConfigInfo": {
+                "Address": "importer.nemoface.com:21",
+                "TimeZoneStr": "Asia/Shanghai",
+                "UserName": "1414638305",
+                "Password": "CP#mnuP&Al",
+                "TimeoutSecond": 10,
+                "SleepMillSecondPerItem": 50,
+                "RootDir": "",
+                "SensorInfo": {
+                    "SensorID": "401223ce-e5aa-4353-b46c-d4eec8392210",
+                    "SensorFilter": {
+                        "QualityThreshold": 0.3,
+                        "IsRemoveDuplication": false
+                    }
+                }
+            }
+        }
+    ],
+    "OutputSlice": [
+        {
+            "ConfigType": 1,
+            "ConfigInfo": {
+                "KafkaAddress": [
+                    "mq.nemoface.com:9092"
+                ],
+                "KafkaTopic": "face-importer",
+                "MaxMessageBytes": "104857600",
+                "MaxThread": 100
+            }
+        }
+    ],
+    "Weed": {
+        "IsOpen": true,
+        "Host": "img.nemoface.com:8502"
+    }
+}
