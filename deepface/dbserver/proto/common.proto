@@ -1,0 +1,382 @@
+syntax = "proto3";
+
+package dg.model;
+
+message SrcMetadata {
+    int64 Timestamp = 1;
+    int32 Duration = 2;
+    int32 SensorId = 3;
+    string SensorName = 4;
+    string SensorUrl = 5;
+    int32 RepoId = 6;
+    string RepoInfo = 7;
+    ObjType ObjType = 8;
+    string SensorIdStr = 9;
+}
+
+//-ping请求
+message PingRequest {
+}
+
+//-ping响应
+message PingResponse {
+    //-matrix的状态描述，正常时为"ok"
+    string Message = 1;
+}
+
+//-带有置信度的矩形框
+message Cutboard {
+    //-矩形框左上点坐标X
+    int32 X = 1;
+    //-矩形框左上点坐标y
+    int32 Y = 2;
+    //-矩形框宽度
+    int32 Width = 3;
+    //-矩形框高度
+    int32 Height = 4;
+    //-保留字段
+    int32 ResWidth = 5;
+    //-保留字段
+    int32 ResHeight = 6;
+    //-矩形框的置信度
+    float Confidence = 7;
+}
+
+message PointF {
+    float X = 1;
+    float Y = 2;
+}
+
+message Rect {
+    int32 X = 1;
+    int32 Y = 2;
+    int32 Width = 3;
+    int32 Height = 4;
+}
+
+message RotatedRect {
+    float CenterX = 1;
+    float CenterY = 2;
+    float Width = 3;
+    float Height = 4;
+    float Angle = 5;
+}
+
+//-矩形框及其裁剪图
+message CutboardImage {
+    //-矩形框的坐标
+    Cutboard Cutboard = 1;
+    //-裁剪图，基于Cutboard而非Rect
+    Image Img = 2;
+    //-带角度的矩形框
+    RotatedRect Rect = 3;
+}
+
+//-颜色
+message Color {
+    //-颜色值的ID
+    int32 ColorId = 1;
+    //-颜色值的置信度
+    float Confidence = 2;
+    //-颜色值的简体中文表示
+    string ColorName = 3;
+}
+
+//-目标类型
+enum ObjType {
+    OBJ_TYPE_UNKNOWN = 0;
+    OBJ_TYPE_CAR = 1;
+    OBJ_TYPE_BICYCLE = 2;
+    OBJ_TYPE_TRICYCLE = 3;
+    OBJ_TYPE_PEDESTRIAN = 4;
+    OBJ_TYPE_FACE = 1024;
+    OBJ_TYPE_VEHICLE_VECTOR = 2048;
+    OBJ_TYPE_BICYCLE_VECTOR = 2049;
+    OBJ_TYPE_TRICYCLE_VECTOR = 2050;
+    OBJ_TYPE_PEDESTRIAN_VECTOR = 2051;
+    OBJ_TYPE_FACE_VECTOR = 3072;
+    OBJ_TYPE_VEHICLE_CUTBOARD = 4096;
+    OBJ_TYPE_BICYCLE_CUTBOARD = 4097;
+    OBJ_TYPE_TRICYCLE_CUTBOARD = 4098;
+    OBJ_TYPE_PEDESTRIAN_CUTBOARD = 4099;
+    OBJ_TYPE_FACE_CUTBOARD = 5120;
+}
+
+enum DataFmtType {
+    UNKNOWNFMT = 0;
+    JSON = 1;
+    PROTOBUF = 2;
+    CSV = 3;
+    PDF = 4;
+}
+
+//-对于某些属性，比如性别，其值只有两个，实际输出时增加unknown字段表示算法的不确定输出
+enum ThreeStatus {
+    THREE_STATUS_FALSE = 0;
+    THREE_STATUS_TRUE = 1;
+    THREE_STATUS_UNKNOWN = -1;
+}
+
+message FeatureVector {
+    int64 Id = 1; //特征的关键字
+    string Feature = 2; //特征值
+}
+
+message NullMessage {
+
+}
+
+//-人脸属性
+message FaceAttribute {
+    //-属性的id
+    int32 AttributeId = 1;
+    //-属性的简体中文表示
+    string Name = 2;
+    //属性值的id
+    int32 ValueId = 3;
+    //-属性值的置信度
+    float Confidence = 4;
+    //-属性值
+    oneof Value
+    {
+        bool ValueBool = 9;
+        int32 ValueInt = 10;
+        float ValueFloat = 11;
+        string ValueString = 12;
+    }
+}
+
+//-图片，当输入的URI/BinData中可以解析出图像的宽度和高度时Width字段和Height可以省略
+message Image {
+    //-图片的id，输入时可以指定
+    string Id = 1;
+    //-图片的宽度
+    int32 Width = 2;
+    //-图片的高度
+    int32 Height = 3;
+    //-图片的资源标识符，优先于BinData
+    string URI = 4;
+    //-图片的base64数据，若URI存在，此字段将被忽略
+    string BinData = 5; // base64 format image
+}
+
+//-人脸align结果
+message FaceAlignResult {
+    //-人脸的特征点
+    repeated PointF LandMarks = 1;
+    //-人脸特征点的分数
+    repeated float LandMarkScores = 2;
+    //-人脸位置，目前无数据
+    Rect Box = 3;
+    //-人脸的各类分数
+    map<string, float> Scores = 4;
+}
+
+//-识别到的人脸
+message RecFace {
+    //-人脸的id，在一次调用中唯一
+    int64 Id = 1;
+    //-人脸区域的置信度
+    float Confidence = 2;
+    //-人脸的矩形框
+    CutboardImage Img = 3;
+    //-人脸的align结果，人脸特征点及相关分数
+    FaceAlignResult AlignResult = 4;
+    //-人脸的质量分数，包括三维角度，检测分数等
+    map<string, float> Qualities = 5;
+    //-人脸的特征数据
+    string Features = 6;
+    //-人脸的属性，包括年龄，性别，民族等
+    repeated FaceAttribute Attributes = 7;
+}
+
+//-属性值
+message NameAndConfidence {
+    //-属性值的id
+    int32 Id = 1;
+    //-属性值的中文简体表示
+    string Name = 2;
+    //-属性值的置信度
+    float Confidence = 3;
+}
+
+//-属性
+message CategoryAndFeature {
+    //-属性类别id
+    int32 Id = 1;
+    //-属性类别的中文简体表示
+    string CategoryName = 2;
+    //-属性的值
+    repeated NameAndConfidence Items = 3;
+}
+
+//-人的属性
+message PeopleAttr {
+    //-性别
+    NameAndConfidence Sex = 1;
+    //-年龄
+    NameAndConfidence Age = 2;
+    //-民族
+    NameAndConfidence National = 3;
+    //-其他关于人的属性，比如上身衣服颜色，眼镜，帽子等
+    repeated CategoryAndFeature Category = 4;
+}
+
+//-识别到的机动车
+message RecVehicle {
+    //-机动车对象的id，由matrix分配，同一次调用中唯一
+    int64 Id = 1;
+    //-机动车的区域坐标和裁剪图
+    CutboardImage Img = 2;
+    //-机动车的特征数据
+    string Features = 3;
+    //-机动车的五级属性
+    VehicleModelType ModelType = 4;
+    //-机动车的颜色
+    Color Color = 5;
+    //-物件
+    repeated VehicleSymbol Symbols = 6;
+    //-车牌
+    repeated LicensePlate Plates = 7;
+    //-乘员
+    repeated Passenger Passengers = 8;
+}
+
+//-非机动车的属性
+message NoMotorAttribute {
+    //-属性id
+    int32 AttributeId = 1;
+    //-属性的简体中文表示
+    string AttributeName = 2;
+    //-属性值的id
+    int32 ValueId = 3;
+    //-属性值的简体中文表示
+    string ValueString = 4;
+    //-属性值的置信度
+    float Confidence = 5; 
+}
+
+//-识别到的非机动车
+message RecNonMotorVehicle {
+    //-非机动车的id，由matrix分配，同一次调用中唯一
+    int64 Id = 1;
+    //-非机动车的区域坐标和裁剪图
+    CutboardImage Img = 2;
+    //-属性，包括非机动车的属性和乘客的属性
+    repeated NoMotorAttribute Attributes = 3;
+}
+
+//-乘员
+message Passenger {
+    //-乘员的id
+    int64 Id = 1;
+    //-乘员的人脸
+    RecFace Face = 2;
+    //-此乘员是否为驾驶员
+    bool Driver = 3;
+    //-乘员的区域坐标和裁剪图
+    CutboardImage Img = 4;
+    //-此成员是否打电话，值域为ThreeStatus
+    int32 PhoneFlag = 5;
+    //-此成员是否系安全带，值域为ThreeStatus
+    int32 BeltFlag = 6;
+    //-电话标志的置信度
+    float PhoneConfidence = 7;
+    //-安全带标志的置信度
+    float BeltConfidence = 8;
+}
+
+//-行人
+message RecPedestrian {
+    //-行人id，由matrix分配，同一次调用中唯一
+    int64 Id = 1;
+    //-行人的区域坐标和裁剪图
+    CutboardImage Img = 2;
+    //-行人的置信度
+    float Confidence = 3;
+    //-行人的属性
+    PeopleAttr PedesAttr = 4;
+    //-行人的人脸
+    RecFace Face = 5;
+    //-行人的特征
+    string Features = 6;
+}
+
+//-机动车的五类属性
+message VehicleModelType {
+    //-车辆的类型，比如轿车，卡车，公交车等
+    int32 StyleId = 1;
+    string Style = 2; //车模类型名称
+    float StyleConfidence = 3;
+
+    //-车辆的主品牌，比如宝马，奥迪，大众等
+    int32 BrandId = 4;
+    string Brand = 5; //车模主品牌名称
+    float BrandConfidence = 6;
+
+    //-车辆的子品牌，比如X5，Q7，途观等
+    int32 SubBrandId = 7;
+    string SubBrand = 8; //车模类型名称
+    float SubBrandConfidence = 9;
+
+    //-车辆的年款
+    int32 ModelYearId = 10;
+    string ModelYear = 11; //车模类型名称
+    float ModelYearConfidence = 12;
+    
+    //-车头或车尾
+    int32 PoseId = 13;
+    string Pose = 14;
+    float PoseConfidence = 15;
+}
+
+//-车牌
+message LicensePlate {
+    //-车牌号码
+    string PlateText = 1;
+    //-车牌颜色
+    Color Color = 2;
+    //-车牌类型id
+    int32 StyleId = 3;
+    //-车牌类型的简体中文表示
+    string StyleName = 4;
+    //-车牌的置信度
+    float Confidence = 5;
+    //-车牌的区域坐标和裁剪图
+    Cutboard Cutboard = 6;
+    //-本省车牌的置信度
+    float LocalProvinceConfidence=7;
+}
+
+//-机动车物件，比如年检标，遮阳板，小摆件等
+message VehicleSymbol {
+    //-物件的id
+    int32 SymbolId = 1;
+    //-物件名称的简体中文表示
+    string SymbolName = 2;
+    //-物件的区域坐标和裁剪图
+    Cutboard Cutboard = 3;
+}
+
+enum DBType {
+    KAFKA = 0;
+    POSTGRES = 1;
+    FILEIMAGE=2;
+}
+
+message StorageConfig {
+    string Address = 1; //结构化信息输出地址 ip:port
+    DBType Type = 2; //
+    repeated string Tags = 3; //设定数据的信息标签
+}
+
+message VehicleObj {
+    SrcMetadata Metadata = 1;
+    Image Img = 2;
+    repeated RecVehicle Vehicle = 3;
+}
+message PedestrianObj {
+    SrcMetadata Metadata = 1;
+    Image Img = 2;
+    repeated RecPedestrian Pedestrian = 3;
+}

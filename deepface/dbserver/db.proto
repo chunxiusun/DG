@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package models;
+
+service DatabaseService {
+	rpc ExecuteSql(SqlRequest) returns (SqlExecuteResponse){} // execute sql string
+	rpc QuerySql(SqlRequest) returns (SqlQueryResponse){} // query sql string
+	rpc ExecuteMeta(MetaExecuteRequest) returns (MetaExecuteResponse){} // execute meta json, response code/msg, batch support 
+	rpc QueryMeta(MetaQueryRequest) returns (MetaQueryResponse){} // query meta json, response []map[stirng]string
+	rpc SetCacheMeta(SetCacheRequest) returns (SetCacheResponse){}
+	rpc GetCachedFieldData(GetCacheRequest) returns (GetCacheResponse){}
+}
+
+enum DBType {
+	DB_Type_Default = 0;
+	DB_Type_Postgres = 1;
+	DB_Type_Hanyun = 2;
+}
+
+enum DBOpts {
+	DB_Opts_Unknown = 0;
+	DB_Opts_Insert = 1;
+	DB_Opts_Delete = 2;
+	DB_Opts_Update = 3;
+	DB_Opts_Search = 4;
+	DB_Opts_Count = 5;
+	DB_Opts_Insert_Or_Update = 6;
+
+	DB_Opts_Batch_Insert = 16;
+	DB_Opts_Batch_Insert_Or_Update = 17;
+
+	DB_Opts_NextId = 32;
+	DB_Opts_NextIds = 33;
+}
+
+// "INSERT INTO..."
+message SqlRequest {
+	string SqlStr = 1;
+}
+
+message SqlExecuteResponse {
+	int32 ErrorCode = 1;
+	// bool Succeed = 2;
+}
+
+message SqlQueryResponse {
+	int32 ErrorCode = 1;
+	repeated MapMessage FieldData = 2;
+}
+
+// json format of MetaSearch
+message MetaQueryRequest {
+	bytes MetaBody = 1;
+}
+
+message MetaQueryResponse {
+	int32 ErrorCode = 1;
+	repeated MapMessage FieldData = 2;
+}
+
+message MapMessage {
+	map<string, string> Data = 1;
+}
+
+// the type:Result exists in other files, so it didn't be deleted.
+message Result {
+	map<string, string> Result = 1;
+}
+
+message MetaExecuteRequest {
+	string Tag = 1; // Tag: Group the queries of the same talbe and field num
+	DBOpts MetaOpts = 2;
+	bytes MetaBody = 3; // MetaInsert or MetaUpdate
+}
+
+message MetaExecuteResponse {
+	int32 ErrorCode = 1;
+	// bool Succeed = 2;
+}
+
+message SetCacheRequest {
+	string Tag = 1; // 标记不同来源、不同分组的Metadata，同一Tag下的Metadata必须为同一个表操作，而且长度必须一致
+	string CacheSql = 2; // sql语句
+	string GroupBy = 3; // 分组缓存, sub-column of MetaSearch's Columes
+	int32 RefreshIntv = 4; //缓存的刷新频率
+}
+
+message SetCacheResponse {
+	int32 ErrorCode = 1;
+	// bool Succeed = 2;
+}
+
+message GetCacheRequest {
+	string CacheId = 1;
+	string GroupId = 2;
+	string ValueId = 3;
+//	string SensorId = 3;
+//	string RuleId = 4;
+//	string CivilId = 5;
+}
+
+message GetCacheResponse {
+	int32 ErrorCode = 1;
+	repeated MapMessage FieldData = 2;
+}
+

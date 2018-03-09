@@ -1,0 +1,3 @@
+dbserver是个中间件，是对postgres的封装
+
+模拟dbserver上游模块向dbserver发送数据，用以测试dbserver的性能
