@@ -29,48 +29,7 @@ os.system("mkdir %s"%v_image)
 #q = Queue.Queue(maxsize=0)
 lock = multiprocessing.Lock()
 
-def recallRate(g_list,t_list,fd,fn):
-    g_num = len(g_list)
-    t_num = len(t_list)
-    #iou = 0.0
-    #iou_count = 0
-    #recall rate
-    recall_list = []
-    for item in g_list:
-        gframeid = item.split(",")[0]
-        groi = item.split(",")[3:7]
-        dct = {}
-        flag = False
-        for data in t_list:
-            tframeid = data[0]
-            troi = data[2:6]
-            if gframeid == tframeid:
-                ratio = CalRatio(groi, troi)
-                if ratio >= THRESHOLD:
-                    flag = True
-                    dct[str(ratio)] = data #有多个符合条件的
-                    #iou = iou + ratio
-                    #iou_count += 1
-        if flag == True:
-            recall_list.append(item)
-        
-        if len(dct) == 0:
-            continue
-        else:
-            c_list = sorted(dct.keys(),reverse=True) #相邻车的情况，取ratio最大的,从tlist中去除
-            key = c_list[0]
-            t_list.remove(dct[key])
-    if g_num == 0:
-        recall_rate = 0
-        value = ""
-    else:
-        recall_rate = len(recall_list)*1.0/g_num
-        value = "%0.2f%s"%(recall_rate*100,"%")
-    fn.write("%s,"%value)
-    fd.write("recall rate:%0.2f%s\n"%(recall_rate*100,"%"))
-    #print "recall rate:%0.2f%s"%(recall_rate*100,"%")
-
-def cc_recallRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
+def recallRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
     g_list=copy.deepcopy(g_list_tmp)
     t_list=copy.deepcopy(t_list_tmp)
             
@@ -105,41 +64,7 @@ def cc_recallRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
     fn.write("%s,"%value)
     fd.write("recall rate:%0.2f%s\n"%(recall_rate*100,"%"))
 
-def accuracyRate(g_list,t_list,fd,fn):
-    t_num = len(t_list)
-    success_list = []
-    for data in t_list:
-        tframeid = data[0]
-        troi = data[2:6]
-        dct = {}
-        flag = False
-        for item in g_list:
-            gframeid = item.split(",")[0]
-            groi = item.split(",")[3:7]
-            if gframeid == tframeid:
-                ratio = CalRatio(groi, troi)
-                if ratio >= THRESHOLD:
-                    flag = True
-                    dct[str(ratio)] = item #有多个符合条件的,去掉最符合条件的那个
-        if flag == True:
-            success_list.append(data)
-        if len(dct) == 0:
-            continue
-        else:
-            c_list = sorted(dct.keys(),reverse=True)
-            key = c_list[0]
-            g_list.remove(dct[key]) #有多个符合条件的,去掉最符合条件的那个
-    if t_num == 0:
-        accuracy_rate = 0
-        value = ""
-    else:
-        accuracy_rate = len(success_list)*1.0/t_num
-        value = "%0.2f%s"%(accuracy_rate*100,"%")
-    fn.write("%s,"%value)
-    fd.write("accuracy rate:%0.2f%s\n"%(accuracy_rate*100,"%"))
-    #print "accuracy rate:%0.2f%s"%(accuracy_rate*100,"%")
-
-def cc_accuracyRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
+def accuracyRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
     g_list=copy.deepcopy(g_list_tmp)
     t_list=copy.deepcopy(t_list_tmp)
     
@@ -174,29 +99,8 @@ def cc_accuracyRate(g_list_tmp,t_list_tmp,g_num,t_num,fd,fn):
         value = "%0.2f%s"%(accuracy_rate*100,"%")
     fn.write("%s,"%value)
     fd.write("accuracy rate:%0.2f%s\n"%(accuracy_rate*100,"%"))
-    #print "accuracy rate:%0.2f%s"%(accuracy_rate*100,"%")
     
 def t_detect_classify(tlist,fd):
-    vehicle = []
-    pedestrian = []
-    bicycle = []
-    tricycle = []
-    for item in tlist:
-        ty = item[1]
-        #del item[1]
-        if ty == "1":
-            vehicle.append(item)
-        elif ty == "2":
-            pedestrian.append(item)
-        elif ty == "3":
-            bicycle.append(item)
-        elif ty == "4":
-            tricycle.append(item)
-    fd.write("test result classify:%d,%d,%d,%d\n"%(len(vehicle),len(pedestrian),len(bicycle),len(tricycle)))
-    #print "test result classify:%d,%d,%d,%d"%(len(vehicle),len(pedestrian),len(bicycle),len(tricycle))
-    return vehicle,pedestrian,bicycle,tricycle
-
-def cc_t_detect_classify(tlist,fd):
     vehicle = {}
     pedestrian = {}
     bicycle = {}
@@ -229,25 +133,6 @@ def cc_t_detect_classify(tlist,fd):
     return vehicle,pedestrian,bicycle,tricycle,num_vehicle,num_pedestrian,num_bicycle,num_tricycle
 
 def g_detect_classify(glist,fd):
-    vehicle = []
-    pedestrian = []
-    bicycle = []
-    tricycle = []
-    for item in glist:
-        detect_type = item.split(",")[2]
-        if detect_type == "1":                                                                                                             
-            vehicle.append(item)                                                                                                           
-        elif detect_type == "2":                                                                                                           
-            pedestrian.append(item)                                                                                                        
-        elif detect_type == "3":                                                                                                           
-            bicycle.append(item)                                                                                                           
-        elif detect_type == "4":                                                                                                           
-            tricycle.append(item)
-    fd.write("groundtruth classify:%d,%d,%d,%d\n"%(len(vehicle),len(pedestrian),len(bicycle),len(tricycle)))
-    #print "groundtruth classify:%d,%d,%d,%d"%(len(vehicle),len(pedestrian),len(bicycle),len(tricycle))                                                 
-    return vehicle,pedestrian,bicycle,tricycle
-
-def cc_g_detect_classify(glist,fd):
     vehicle = {}
     pedestrian = {}
     bicycle = {}
@@ -279,45 +164,7 @@ def cc_g_detect_classify(glist,fd):
     fd.write("groundtruth classify:%d,%d,%d,%d\n"%(num_vehicle,num_pedestrian,num_bicycle,num_tricycle))
     return vehicle,pedestrian,bicycle,tricycle,num_vehicle,num_pedestrian,num_bicycle,num_tricycle
 
-'''
 def dealFilter(lst,rootdir,fd,n):
-    lst32 = []
-    lst3248 = []
-    lst48 = []
-    #other = []
-    for item in lst:
-        if n == "g":
-            frameid = item.strip().split(",")[0]
-            roi = item.strip().split(",")[3:7]
-        elif n == "t":
-            frameid = item[0]
-            roi = item[2:6]
-        img = "%s/%s.jpg"%(rootdir,frameid)
-        a1,a2 = getResolutionRatio(img)
-        w = eval(roi[2])
-        h = eval(roi[3])
-        nw = w * a1
-        nh = h * a2
-        if nw <= 32 and nh <= 64:
-            lst32.append(item)
-        #elif nw > 32 and nw <= 48 and nh > 64 and nh <= 96:
-         #   lst3248.append(item)
-        elif nw > 48 and nh > 96:
-            lst48.append(item)
-        else:
-            lst3248.append(item)
-    s = ""
-    if n == "g":
-        s = "groundtruth filter"
-    elif n == "t":
-        s = "test result filter"
-    fd.write("%s 32:%d 3248:%d 48:%d\n"%(s,len(lst32),len(lst3248),len(lst48)))
-    #print "%s 32:%d 3248:%d 48:%d"%(s,len(lst32),len(lst3248),len(lst48))
-    return lst32,lst3248,lst48
-
-'''
-
-def cc_dealFilter(lst,rootdir,fd,n):
     lst32 = {}
     lst3248 = {}
     lst48 = {}
@@ -355,40 +202,10 @@ def cc_dealFilter(lst,rootdir,fd,n):
     elif n == "t":
         s = "test result filter"
     fd.write("%s 32:%d 3248:%d 48:%d\n"%(s,num_lst32,num_lst3248,num_lst48))
-    #print "%s 32:%d 3248:%d 48:%d"%(s,len(lst32),len(lst3248),len(lst48))
     return lst32,lst3248,lst48,num_lst32,num_lst3248,num_lst48
 
 ##images is img_list, filename is groundtruth_list of img_list
 def dealGroundTruthInput(images,filename):
-    glist = []
-    if os.path.isdir(images):
-        lst = os.listdir(images)
-        fd = open(filename,'r')
-        for line in fd.readlines():
-            gframeid = line.strip().split(",")[0]
-            for i in range(0,len(lst)):
-                iframeid = lst[i].split(".")[0]
-                if iframeid == gframeid:
-                    glist.append(line.strip())
-        fd.close()
-    elif os.path.isfile(images):
-        lst = []
-        fi = open(images,'r')
-        for line in fi.readlines():
-            iframeid = line.strip().split("/")[-1].split(".")[0]
-            lst.append(iframeid)
-        fi.close()
-        fd = open(filename,'r')
-        for line in fd.readlines():
-            gframeid = line.strip().split(",")[0]
-            for i in range(0,len(lst)):##slow
-                iframeid = lst[i]
-                if iframeid == gframeid:
-                    glist.append(line.strip())
-        fd.close()
-    return glist
-
-def cc_dealGroundTruthInput(images,filename):
     glist = {}
     if os.path.isdir(images):
         lst = os.listdir(images)
@@ -404,47 +221,21 @@ def cc_dealGroundTruthInput(images,filename):
         fd = open(filename,'r')
         for line in fd.readlines():
             gframeid = line.strip().split(",")[0] ### line = 001673,74,1,475.5,7.5,215,177, means iframeid,?,class,xmin,ymin,width,height
-            
             if gframeid in lst:
                 if gframeid in glist:
                     glist[gframeid].append(line.strip())
                 else:
                     glist[gframeid] = [line.strip()]
-        
         fd.close()
-    
-
     return glist
 
-
-
-
-
 def dealTestResultInput(filename):
-    tlist = []
-    fd = open(filename,'r')
-    for line in fd.readlines():
-        data = line.strip().split(" ")
-        frameid = data[0].split("/")[-1].split(".")[0]
-        for i in range(2,len(data),6):
-           lst = []
-           lst.append(frameid)
-           lst.append(data[i])
-           lst.append(data[i+1])
-           lst.append(data[i+2])
-           lst.append(data[i+3])
-           lst.append(data[i+4])
-           tlist.append(lst)
-    return tlist 
-
-def cc_dealTestResultInput(filename):
     tlist = {}
     fd = open(filename,'r')
     for line in fd.readlines():
         data = line.strip().split(" ")   ### line = /home/chencheng/tools/chunxiu_mAP/images_all/1/001673.jpg 0.999969 1 472 303 450 498 \
         ### 0.999878 1 6 406 343 294 0.999870 1 254 132 299 267 0.999160 1 682 86 246 201 0.998409 1 3 92 228 207 0.990335 1 486 10 204 178 \
         ### 0.978699 1 236 0 217 141 means score,class,xmin,ymin,width,height
-
         frameid = data[0].split("/")[-1].split(".")[0]
         tlist[frameid]=[]
         for i in range(2,len(data),6):
@@ -500,46 +291,6 @@ def visual(s_img,t_img,glist,tlist,i,filt=""):
      d = str(i)+filt
      os.system("mkdir %s/%s"%(t_img,d))
      fd = open(s_img,'r')
-     for line in fd.readlines():
-         s_name = line.strip()
-         img = s_name.split("/")[-1]
-     #for img in os.listdir(s_img):
-         flag = False
-         #s_name = "%s/%s"%(s_img,img)
-         im = cv2.imread(s_name)
-         im_copy = im.copy()
-         frameid = img.split(".")[0]
-         for g in glist:
-             data = g.split(",")
-             gframeid = data[0]
-             roi = data[3:7]
-             if frameid == gframeid:
-                 flag = True
-                 x = eval(roi[0])
-                 y = eval(roi[1])
-                 x1 = eval(roi[0]) + eval(roi[2])
-                 y1 = eval(roi[1]) + eval(roi[3])
-                 cv2.rectangle(im_copy,(int(x),int(y)),(int(x1),int(y1)),(0,0,255),3)
-         for t in tlist:
-             data = t
-             tframeid = data[0]
-             roi = data[2:6]
-             if frameid == tframeid:
-                 flag = True
-                 x = eval(roi[0])
-                 y = eval(roi[1])
-                 x1 = eval(roi[0]) + eval(roi[2])
-                 y1 = eval(roi[1]) + eval(roi[3])
-                 cv2.rectangle(im_copy,(int(x),int(y)),(int(x1),int(y1)),(0,255,0),3)
-         if flag == True:
-             cv2.imwrite("%s/%s/%s"%(t_img,d,img), im_copy)
-         #break
-     fd.close()
-
-def cc_visual(s_img,t_img,glist,tlist,i,filt=""):
-     d = str(i)+filt
-     os.system("mkdir %s/%s"%(t_img,d))
-     fd = open(s_img,'r')
      lines = fd.readlines()
      for i in range(500):
          line = lines[i]
@@ -579,62 +330,57 @@ def cc_visual(s_img,t_img,glist,tlist,i,filt=""):
 
 def run(i):
     rate_file = "%s/%s.txt"%(r_result,str(i))
-    #print rate_file
     now_file = "%s/%s_%s.txt"%(r_result,str(i),str(i))
     fd = open(rate_file,'w')
     fn = open(now_file,'w')
-    #print "\n" + "#"*20 + "video_%s"%str(i) + "#"*20
+    print "\n" + "#"*20 + "video_%s"%str(i) + "#"*20
     imgdir = "%s/%s"%(imagePath,str(i))
     imgfile = "%s/%s.list"%(imageFile,str(i))
     gfile = "%s/%s.txt"%(gFile,str(i))
     tfile = "%s/%s.txt"%(tFile,str(i))
-    #glist = dealGroundTruthInput(imgdir,gfile)
-    glist = cc_dealGroundTruthInput(imgfile,gfile) ##imgfile is img_list, gfile is groundtruth_list of img_list
-    tlist = cc_dealTestResultInput(tfile)  ##tfile is test result txt
-    #visual(imgdir,v_image,glist,tlist,i)
+    glist = dealGroundTruthInput(imgfile,gfile) ##imgfile is img_list, gfile is groundtruth_list of img_list
+    tlist = dealTestResultInput(tfile)  ##tfile is test result txt
     
-    cc_visual(imgfile,v_image,glist,tlist,i)  ## draw test_box and grondtruth in img
+    visual(imgfile,v_image,glist,tlist,i)  ## draw test_box and grondtruth in img
 
     fd.write("*"*10 + " all " + "*"*10 + "\n")
-    g_vehicle,g_pedestrian,g_bicycle,g_tricycle,num_g_vehicle,num_g_pedestrian,num_g_bicycle,num_g_tricycle = cc_g_detect_classify(glist,fd)
-    t_vehicle,t_pedestrian,t_bicycle,t_tricycle,num_t_vehicle,num_t_pedestrian,num_t_bicycle,num_t_tricycle = cc_t_detect_classify(tlist,fd)
+    g_vehicle,g_pedestrian,g_bicycle,g_tricycle,num_g_vehicle,num_g_pedestrian,num_g_bicycle,num_g_tricycle = g_detect_classify(glist,fd)
+    t_vehicle,t_pedestrian,t_bicycle,t_tricycle,num_t_vehicle,num_t_pedestrian,num_t_bicycle,num_t_tricycle = t_detect_classify(tlist,fd)
     
-    
-    #'''
     fd.write("##vehicle##\n")
     if num_g_vehicle == 0:
         fd.write("No Vehicles:%d,%d\n"%(num_g_vehicle,num_t_vehicle))
         fn.write(",,")
     else:
-        cc_recallRate(g_vehicle,t_vehicle,num_g_vehicle,num_t_vehicle,fd,fn)
-        cc_accuracyRate(g_vehicle,t_vehicle,num_g_vehicle,num_t_vehicle,fd,fn)
-    #'''
+        recallRate(g_vehicle,t_vehicle,num_g_vehicle,num_t_vehicle,fd,fn)
+        accuracyRate(g_vehicle,t_vehicle,num_g_vehicle,num_t_vehicle,fd,fn)
+
     '''
     fd.write("##pedestrian##\n")
     if num_g_pedestrian == 0:
         fd.write("No Pedestrian:%d,%d\n"%(num_g_pedestrian,num_t_pedestrian))
         fn.write(",,")
     else:
-        cc_recallRate(g_pedestrian,t_pedestrian,num_g_pedestrian,num_t_pedestrian,fd,fn)
-        cc_accuracyRate(g_pedestrian,t_pedestrian,num_g_pedestrian,num_t_pedestrian,fd,fn)
+        recallRate(g_pedestrian,t_pedestrian,num_g_pedestrian,num_t_pedestrian,fd,fn)
+        accuracyRate(g_pedestrian,t_pedestrian,num_g_pedestrian,num_t_pedestrian,fd,fn)
 
     fd.write("##bicycle##\n")
     if num_g_bicycle == 0:
         fd.write("No Bicycle:%d,%d\n"%(num_g_bicycle,num_t_bicycle))
         fn.write(",,")
     else:
-        cc_recallRate(g_bicycle,t_bicycle,num_g_bicycle,num_t_bicycle,fd,fn)
-        cc_accuracyRate(g_bicycle,t_bicycle,num_g_bicycle,num_t_bicycle,fd,fn)
+        recallRate(g_bicycle,t_bicycle,num_g_bicycle,num_t_bicycle,fd,fn)
+        accuracyRate(g_bicycle,t_bicycle,num_g_bicycle,num_t_bicycle,fd,fn)
     '''
-    #'''
+
     fd.write("##tricycle##\n")
     if num_g_tricycle == 0:
         fd.write("No Tricycle:%d,%d\n"%(num_g_tricycle,num_t_tricycle))
         fn.write(",,")
     else:
-        cc_recallRate(g_tricycle,t_tricycle,num_g_tricycle,num_t_tricycle,fd,fn)
-        cc_accuracyRate(g_tricycle,t_tricycle,num_g_tricycle,num_t_tricycle,fd,fn)
-    #'''
+        recallRate(g_tricycle,t_tricycle,num_g_tricycle,num_t_tricycle,fd,fn)
+        accuracyRate(g_tricycle,t_tricycle,num_g_tricycle,num_t_tricycle,fd,fn)
+
     fd.write("\n" + "*"*10 + " filter " + "*"*10 + "\n")
 
     classes = ["pedestrian","bicycle"]
@@ -646,24 +392,18 @@ def run(i):
         fd.write("="*5 + ty + "="*5 + "\n")
         g_type = "g_%s"%ty
         t_type = "t_%s"%ty
-        glst32,glst3248,glst48,gnum_lst32,gnum_lst3248,gnum_lst48 = cc_dealFilter(eval(g_type),imgdir,fd,"g")
-        tlst32,tlst3248,tlst48,tnum_lst32,tnum_lst3248,tnum_lst48 = cc_dealFilter(eval(t_type),imgdir,fd,"t")
+        glst32,glst3248,glst48,gnum_lst32,gnum_lst3248,gnum_lst48 = dealFilter(eval(g_type),imgdir,fd,"g")
+        tlst32,tlst3248,tlst48,tnum_lst32,tnum_lst3248,tnum_lst48 = dealFilter(eval(t_type),imgdir,fd,"t")
         fd.write("## %d ##\n"%48)
         if gnum_lst48==0:
             fd.write("No %s:%d,%d\n"%(ty,gnum_lst48,tnum_lst48))
             fn.write(",,")
         else:
-            cc_recallRate(glst48,tlst48,gnum_lst48,tnum_lst48,fd,fn)
-            cc_accuracyRate(glst48,tlst48,gnum_lst48,tnum_lst48,fd,fn)
-
-
-    #visual(imgdir,v_image,glst48,tlst48,i,"_%s"%item)
-    #visual(imgfile,v_image,glst48,tlst48,i,"_%s"%item)
+            recallRate(glst48,tlst48,gnum_lst48,tnum_lst48,fd,fn)
+            accuracyRate(glst48,tlst48,gnum_lst48,tnum_lst48,fd,fn)
     
     fd.close()
     fn.close()
-
-
 
 ## txt result to xls result 
 def saveExcel():
