@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+#author:chunxiusun
 
 import os
 import sys
@@ -15,7 +16,7 @@ THRESHOLD = 0.5 #判断是否为同一个目标
 imagePath = "./images_all/" #图片所在路径
 imageFile = "./images_all/" #图片列表文件所在路径
 gFile = "./12groundtruth/" #标注文件路径
-tFile = "./12testresult_6/" #dgvehicle检测结果路径
+tFile = "./12testresult_1/" #dgvehicle检测结果路径
 xlsxfile = "12_6.xls" #最终输出文件（召回率与检测率）
 
 r_result = "./rate_result_6/" #中间文件（召回率与检测率）
@@ -239,16 +240,17 @@ def dealTestResultInput(filename):
         frameid = data[0].split("/")[-1].split(".")[0]
         tlist[frameid]=[]
         for i in range(2,len(data),6):
-           lst = []
-           lst.append(frameid)
-           lst.append(data[i]) ##class
-           lst.append(data[i+1]) ##xmin
-           lst.append(data[i+2]) ##ymin
-           lst.append(data[i+3]) ##width
-           lst.append(data[i+4]) ##height
-           tlist[frameid].append(lst)
+            lst = []
+            lst.append(frameid)
+            lst.append(data[i]) ##class
+            lst.append(data[i+1]) ##xmin
+            lst.append(data[i+2]) ##ymin
+            lst.append(data[i+3]) ##width
+            lst.append(data[i+4]) ##height
+            tlist[frameid].append(lst)
         #print('tlist[frameid]:{}'.format(tlist[frameid]))
         #sys.exit()
+    print tlist
     return tlist 
 
 def getResolutionRatio(img):
@@ -340,7 +342,7 @@ def run(i):
     tfile = "%s/%s.txt"%(tFile,str(i))
     glist = dealGroundTruthInput(imgfile,gfile) ##imgfile is img_list, gfile is groundtruth_list of img_list
     tlist = dealTestResultInput(tfile)  ##tfile is test result txt
-    
+   
     visual(imgfile,v_image,glist,tlist,i)  ## draw test_box and grondtruth in img
 
     fd.write("*"*10 + " all " + "*"*10 + "\n")
