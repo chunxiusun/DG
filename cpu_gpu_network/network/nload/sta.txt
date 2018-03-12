@@ -1,0 +1,10 @@
+################## Incoming ######################
+Incoming Max:75.86MBit/s
+Incoming Min:0.00MBit/s
+Incoming Avg:11.74MBit/s
+
+################## Outgoing ######################
+Outgoing Max:42.96MBit/s
+Outgoing Min:0.00MBit/s
+Outgoing Avg:1.16MBit/s
+

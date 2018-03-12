@@ -1,0 +1,100 @@
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
+################## mxadaptor_1 ######################
+mxadaptor_1 CPU Max:281.20%
+mxadaptor_1 CPU Min:134.50%
+mxadaptor_1 CPU Avg:199.39%
+
+################## mxadaptor_1 ######################
+mxadaptor_1 MEM Max:4.70%
+mxadaptor_1 MEM Min:3.50%
+mxadaptor_1 MEM Avg:4.50%
+
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 CPU Max:271.10%
+mxadaptor_2 CPU Min:130.70%
+mxadaptor_2 CPU Avg:201.01%
+
+################## mxadaptor_2 ######################
+mxadaptor_2 MEM Max:3.40%
+mxadaptor_2 MEM Min:3.30%
+mxadaptor_2 MEM Avg:3.37%
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
+################## mxadaptor_1 ######################
+mxadaptor_1 CPU Max:281.20%
+mxadaptor_1 CPU Min:134.50%
+mxadaptor_1 CPU Avg:199.39%
+
+################## mxadaptor_1 ######################
+mxadaptor_1 MEM Max:4.70%
+mxadaptor_1 MEM Min:3.50%
+mxadaptor_1 MEM Avg:4.50%
+
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 CPU Max:271.10%
+mxadaptor_2 CPU Min:130.70%
+mxadaptor_2 CPU Avg:201.01%
+
+################## mxadaptor_2 ######################
+mxadaptor_2 MEM Max:3.40%
+mxadaptor_2 MEM Min:3.30%
+mxadaptor_2 MEM Avg:3.37%
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
+################## mxadaptor_1 ######################
+mxadaptor_1 RES Max:1509.38MB
+mxadaptor_1 RES Min:1105.92MB
+mxadaptor_1 RES Avg:1436.16MB
+
+################## mxadaptor_2 ######################
+mxadaptor_2 RES Max:1082.37MB
+mxadaptor_2 RES Min:1061.89MB
+mxadaptor_2 RES Avg:1076.22MB
+
