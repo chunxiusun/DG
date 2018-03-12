@@ -1,0 +1,3 @@
+nogus_min是人眼相机系统的日志模块
+
+根据nogus_min收集日志的格式，编写mock程序log_sun.py或log_sun.sh对其进行测试
