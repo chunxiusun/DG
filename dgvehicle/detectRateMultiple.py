@@ -11,18 +11,18 @@ import copy
 #import Queue
 import multiprocessing
 
-THRESHOLD = 0.5
-imagePath = "./images_all/"
-imageFile = "./images_all/"
-gFile = "./12groundtruth/"
-tFile = "./12testresult_6/"
-xlsxfile = "12_6.xls"
+THRESHOLD = 0.5 #判断是否为同一个目标
+imagePath = "./images_all/" #图片所在路径
+imageFile = "./images_all/" #图片列表文件所在路径
+gFile = "./12groundtruth/" #标注文件路径
+tFile = "./12testresult_6/" #dgvehicle检测结果路径
+xlsxfile = "12_6.xls" #最终输出文件（召回率与检测率）
 
-r_result = "./rate_result_6/"
+r_result = "./rate_result_6/" #中间文件（召回率与检测率）
 os.system("rm -r %s"%r_result)
 os.system("mkdir %s"%r_result)
 
-v_image = "./visual_image_6/"
+v_image = "./visual_image_6/" #画检查框后图片存放路径
 os.system("rm -r %s"%v_image)
 os.system("mkdir %s"%v_image)
 
