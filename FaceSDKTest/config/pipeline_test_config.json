@@ -1,0 +1,5 @@
+{
+    "FaceDetector":["FCN","RFCN"],
+    "FaceAlignment":["CDNN_CAFFE"],
+    "FaceRecognition":["CDNN_CAFFE"]
+}
