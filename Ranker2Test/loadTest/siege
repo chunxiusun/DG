@@ -1,0 +1,16 @@
+##################Json (query.json)
+{
+    "Context":{
+    },
+    "Features": {
+        "Operation": 4,
+        "ObjectFeatures": [
+            {
+            "Id": "337eb158-c596-4357-a0eb-df9c6b1544de"
+            }
+    ]
+    }
+}
+
+#################Siege
+siege -c 1 r 1 'http://192.168.2.19:6501/rank/feature POST <./query.json' 

@@ -1,0 +1,6 @@
+# 1vN Ranker (ranker_stress.linux在同目录)
+./ranker_stress.linux -addr=192.168.2.19:6500 -cmd=read -fl=384 -qps=50 -rid=1000w -t=100 -logtostderr=1
+
+# add feature
+./ranker_stress.linux -addr=192.168.2.19:6500 -cmd=write -fl=384 -qps=50 -rid=1000w -t=100 -logtostderr=1
+

@@ -1,0 +1,60 @@
+*** Settings ***
+Library           RequestsLibrary
+Library           Collections
+Library           XML
+Library           ../util/helper.py
+Variables         ../variable/globalVariable.py
+Variables         ../variable/smokeVariable.py
+
+*** Keywords ***
+createRepoSession
+    Create Session    repoSession    ${repoUrl}    ${repoHeader}
+
+createRepo
+    [Arguments]    ${repoId}    ${repoLevel}    ${featureLen}    ${featureDataType}    ${featureCapacity}    ${featureGpuThread}
+    createRepoSession
+    ${repoCreate}    Post Request    repoSession    ${repoPath}    data={"Context":{},"Repo":{"Operation":1,"RepoId":"${repoId}","Level":${repoLevel},"FeatureLen":${featureLen},"Capacity":${featureCapacity},"FeatureDataType":${featureDataType},"Params":{"GPUThreads":"${featureGpuThread}"}}}    headers=${repoHeader}
+    [Return]    ${repoCreate}
+
+deleteRepo
+    [Arguments]    ${repoId}
+    createRepoSession
+    ${repoDelete}    Post Request    repoSession    ${repoPath}    data={"Context":{},"Repo":{"RepoId":"${repoId}","Operation":2}}    headers=${repoHeader}
+    [Return]    ${repoDelete}
+
+updateRepo
+    [Arguments]    ${repoId}    ${repoLevel}    ${featureLen}    ${featureDataType}    ${featureCapacity}    ${featureGpuThread}
+    createRepoSession
+    ${repoUpdate}    Post Request    repoSession    ${repoPath}    data={"Context":{},"Repo":{"Operation":3,"RepoId":"${repoId}","Level":${repoLevel},"FeatureLen":${featureLen},"Capacity":${featureCapacity},"FeatureDataType":${featureDataType},"Params":{"GPUThreads":"${featureGpuThread}"}}}    headers=${repoHeader}
+    [Return]    ${repoUpdate}
+
+queryRepo
+    [Arguments]    ${repoId}
+    createRepoSession
+    ${repoQuery}    Post Request    repoSession    ${repoPath}    data={"Context":{},"Repo":{"RepoId":"${repoId}","Operation":4}}    headers=${repoHeader}
+    [Return]    ${repoQuery}
+
+checkRepoAdd
+    [Arguments]    ${responseData}    ${repoId}    ${repoLevel}    ${featureLen}    ${featureDataType}    ${featureCapacity}
+    ...    ${featureGpuThread}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["RepoId"]}    ${repoId}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["Level"]}    ${repoLevel}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["FeatureLen"]}    ${featureLen}
+    Run Keyword If    ${featureDataType} != 0    Should Be Equal As Strings    ${responseData["Repos"][0]["FeatureDataType"]}    ${featureDataType}
+    Run Keyword If    ${repoLevel} != 1    Should Be Equal As Strings    ${responseData["Repos"][0]["Capacity"]}    ${featureCapacity}
+    Run Keyword If    ${repoLevel} != 1    Should Be Equal As Strings    ${responseData["Repos"][0]["Params"]["GPUThreads"]}    ${featureGpuThread}
+
+checkRepoUpdate
+    [Arguments]    ${responseData}    ${repoId}    ${repoLevel}    ${featureLen}    ${featureDataType}    ${featureCapacity}
+    ...    ${featureGpuThread}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["RepoId"]}    ${repoId}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["Level"]}    ${repoLevel}
+    Should Be Equal As Strings    ${responseData["Repos"][0]["FeatureLen"]}    ${featureLen}
+    Run Keyword If    ${featureDataType} != 0    Should Be Equal As Strings    ${responseData["Repos"][0]["FeatureDataType"]}    ${featureDataType}
+    Run Keyword If    ${repoLevel} != 1    Should Be Equal As Strings    ${responseData["Repos"][0]["Capacity"]}    ${featureCapacity}
+    Run Keyword If    ${repoLevel} != 1    Should Be Equal As Strings    ${responseData["Repos"][0]["Params"]["GPUThreads"]}    ${featureGpuThread}
+
+checkRepoDelete
+    [Arguments]    ${responseData}    ${status}    ${message}=not exists
+    Should Be Equal As Strings    ${responseData["Context"]["Status"]}    ${status}
+    Should Contain    ${responseData["Context"]["Message"]}    ${message}

@@ -1,0 +1,6 @@
+for((i=1;i<=10000;i++));
+do
+    echo ""
+    echo "i:", $i
+    curl -H "Content-Type: application/json" -X POST  --data '{"Context":{},"Repo":{"Operation":4}}' http://192.168.2.19:6501/rank/repo
+done

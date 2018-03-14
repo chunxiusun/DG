@@ -1,0 +1,62 @@
+*** Settings ***
+Library           RequestsLibrary
+Library           Collections
+Library           XML
+Library           ../util/helper.py
+Variables         ../variable/globalVariable.py
+Variables         ../variable/smokeVariable.py
+
+*** Keywords ***
+createFeatureSession
+    Create Session    featureSession    ${repoUrl}    ${repoHeader}
+
+addFeature
+    [Arguments]    ${repoId}    ${featureString}    ${featureId}    ${featureLocation}    ${featureTime}    ${featureAttributes}
+    createFeatureSession
+    ${featureAdd}    Post Request    featureSession    ${featurePath}    data={"Features":{"Operation":1,"RepoId":"${repoId}","ObjectFeatures":[{"Feature":"${featureString}","Attributes":${featureAttributes},"Time":${featureTime},"Id":"${featureId}","Location":"${featureLocation}"}]},"Context":{"SessionId":"${featureSessionId}"}}    headers=${featureHeader}
+    [Return]    ${featureAdd}
+    
+queryFeature
+    [Arguments]    ${featureId}    
+    createFeatureSession
+    ${featureQuery}    Post Request    featureSession    ${featurePath}    data={"Context":{},"Features":{"Operation":4,"ObjectFeatures":[{"Id":"${featureId}"}]}}    headers=${featureHeader}
+    [Return]    ${featureQuery}
+    
+deleteFeature
+    [Arguments]    ${featureId}    
+    createFeatureSession
+    ${featureDelete}    Post Request    featureSession    ${featurePath}    data={"Context":{},"Features":{"Operation":2,"ObjectFeatures":[{"Id":"${featureId}"}]}}    headers=${featureHeader}
+    [Return]    ${featureDelete}
+    
+updateFeature
+    [Arguments]    ${repoId}    ${featureString}    ${featureId}    ${featureLocation}    ${featureTime}    ${featureAttributes}
+    createFeatureSession
+    ${featureUpdate}    Post Request    featureSession    ${featurePath}    data={"Features":{"Operation":3,"RepoId":"${repoId}","ObjectFeatures":[{"Feature":"${featureString}","Attributes":${featureAttributes},"Time":${featureTime},"Id":"${featureId}","Location":"${featureLocation}"}]},"Context":{"SessionId":"${featureSessionId}"}}    headers=${featureHeader}
+    [Return]    ${featureUpdate}
+    
+checkFeatureAdd
+    [Arguments]    ${responseData}    ${repoId}    ${featureString}    ${featureId}    ${featureLocation}    ${featureTime}    ${featureAttributes}
+    ${responseData}    stringToDict    ${responseData} 
+    Should Be Equal As Strings    ${responseData["Features"]["RepoId"]}    ${repoId}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Feature"]}    ${featureString}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Id"]}    ${featureId}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Location"]}    ${featureLocation}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Time"]}    ${featureTime}
+    ${eFeatureAttributes}    Evaluate    eval("%s" % ${featureAttributes})
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Attributes"]}    ${eFeatureAttributes}
+
+checkFeatureUpdate
+    [Arguments]    ${responseData}    ${repoId}    ${featureString}    ${featureId}    ${featureLocation}    ${featureTime}    ${featureAttributes}
+    ${responseData}    stringToDict    ${responseData} 
+    Should Be Equal As Strings    ${responseData["Features"]["RepoId"]}    ${repoId}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Feature"]}    ${featureString}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Id"]}    ${featureId}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Location"]}    ${featureLocation}
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Time"]}    ${featureTime}
+    ${eFeatureAttributes}    Evaluate    eval("%s" % ${featureAttributes})
+    Should Be Equal As Strings    ${responseData["Features"]["ObjectFeatures"][0]["Attributes"]}    ${eFeatureAttributes}
+
+checkFeatureDelete
+    [Arguments]    ${responseData}    ${status}    
+    ${responseData}    stringToDict    ${responseData} 
+    Should Be Equal As Strings    ${responseData["Context"]["Status"]}    ${status}

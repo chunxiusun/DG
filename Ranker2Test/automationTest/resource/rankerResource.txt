@@ -1,0 +1,65 @@
+*** Settings ***
+Library           RequestsLibrary
+Library           Collections
+Library           XML
+Library           ../util/helper.py
+Variables         ../variable/globalVariable.py
+Variables         ../variable/smokeVariable.py
+
+*** Keywords ***
+create1v1RankerSession
+    Create Session    1v1RankerSession    ${repoUrl}    ${repoHeader}
+
+1v1Ranker
+    Log    ${ranker1vnObjectFeature}
+    Log    ${ranker1vnObjectCandidates}  
+    [Arguments]    ${ranker1vnObjectFeature}    ${ranker1vnObjectCandidates}   
+    create1v1RankerSession
+    ${ranker1vn}    Post Request    1v1RankerSession    ${rankerPath}    data={"Context":{"SessionId":"test123"},"ObjectFeature":{"Feature":"${ranker1vnObjectFeature}"},"Params":{"Normalization":"true"},"ObjectCandidates":${ranker1vnObjectCandidates}}    headers=${rankerHeader}
+    [Return]    ${ranker1vn}
+    
+scoreCheck1v1Ranker
+    [Arguments]    ${responseData}    ${scoreExpect}    
+    ${responseData}    stringToDict    ${responseData} 
+    Should Be Equal As Strings    ${responseData["Candidates"][0]["Id"]}    0
+    Should Be Equal As Strings    ${responseData["Candidates"][0]["Score"]}    0.9999
+
+create1vNRankerSession
+    Create Session    1vNRankerSession    ${repoUrl}    ${repoHeader}
+    
+1vNRanker
+    [Arguments]    ${ranker1vNObjectFeature}    ${ranker1vNFeatureLocation}   
+    create1vNRankerSession
+    ${ranker1vN}    Post Request    1vNRankerSession    ${rankerPath}    data={"Params":{"RepoId":"${ranker1vNRepoId}","Normalization":"true","Locations":"${ranker1vNFeatureLocation}","StartTime":"0","EndTime":"9999999999999","MaxCandidates":"10"},"ObjectFeature":{"Feature":"${ranker1vNObjectFeature}"},"Context":{"SessionId":"test123"}}    headers=${rankerHeader}
+    [Return]    ${ranker1vN}
+    
+addFeature1vNRanker
+    [Arguments]    ${ranker1vNRepoId}    ${ranker1vNObjectFeature}    ${ranker1vNFeatureId}    ${ranker1vNFeatureLocation}    ${ranker1vNFeatureTime}    ${ranker1vNFeatureAttributes}
+    createFeatureSession
+    ${featureAdd}    Post Request    featureSession    ${featurePath}    data={"Features":{"Operation":1,"RepoId":"${ranker1vNRepoId}","ObjectFeatures":[{"Feature":"${ranker1vNFeatureString}","Attributes":${ranker1vNFeatureAttributes},"Time":${ranker1vNFeatureTime},"Id":"${ranker1vNFeatureId}","Location":"${ranker1vNFeatureLocation}"}]},"Context":{"SessionId":"${featureSessionId}"}}    headers=${rankerHeader}
+    [Return]    ${featureAdd}
+    
+addMoreFeature1vNRanker
+    [Arguments]    ${ranker1vNRepoId}    ${ranker1vNFeatureLen}   
+    : FOR    ${i}    IN RANGE    ${ranker1vNMoreFeatureNumber}
+    \    Log    ${i}
+    \    ${featureId}    getRandomString    25    1  
+    \    ${featureString}    featureCreate    ${ranker1vNFeatureLen}         
+    \    ${featureLocation}    getRandomString    5    1  
+    \    ${featureTime}    getRandomString    5           
+    \    ${featureSessionId}    getRandomString    5    
+    \    ${featureAttrKey}    getRandomString    5    1  
+    \    ${featureAttrValue}    getRandomString    5       
+    \    ${featureAdd}    Post Request    featureSession    ${featurePath}    data={"Features":{"Operation":1,"RepoId":"${ranker1vNRepoId}","ObjectFeatures":[{"Feature":"${featureString}","Attributes":{"${featureAttrKey}":${featureAttrValue}},"Time":${featureTime},"Id":"${featureId}","Location":"${featureLocation}"}]},"Context":{"SessionId":"${featureSessionId}"}}    headers=${rankerHeader}
+    [Return]    ${featureAdd}
+    
+scoreCheck1vNRanker
+    [Arguments]    ${responseData}    ${scoreExpect}    
+    ${responseData}    stringToDict    ${responseData} 
+    Should Be Equal As Strings    ${responseData["Candidates"][0]["Id"]}    ${ranker1vNFeatureId} 
+    Should Be Equal As Strings    ${responseData["Candidates"][0]["Score"]}    0.9999
+    
+
+
+    
+
