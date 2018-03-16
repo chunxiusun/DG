@@ -1,0 +1,38 @@
+{
+  "Version": {
+    "Code": "1.0.0",
+    "Model": "1.9"
+  },
+  "ProtocolType": "rpc|restful",
+  "InstanceType": "ranker",
+  "System": {
+    "Ip": "0.0.0.0",
+    "Port": 6500,
+    "Threads": [1]
+  },
+  "RankerType": "face",
+  "Advanced": {
+    "Ranker": {
+      "NormalizeAlpha": -0.02,
+      "NormalizeBeta": 1.1,
+      "Maximum": 1000000,
+      "FeatureLen": 128,
+      "SaveToFile": true,
+      "SaveToFileIterval": 10000,
+      "Static": true,
+      "DynamicLoadNumber": 300000,
+      "RepoPath": "./repo/test",
+      "ImageRootPath": "",
+      "FaceFeatureType":1 // 1:float, 2:short
+    },
+    "ObjectRanker": {
+      "Database": "/home/dell/dengkeqiao/repo/database",
+      "LoadThread": 4,
+      "SearchThread": 4
+    },
+    "ParseImageTimeout": 60
+  },
+  "ModelPath":{
+    "dgface":"data/dgface"
+  }
+}

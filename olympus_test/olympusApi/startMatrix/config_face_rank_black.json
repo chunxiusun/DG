@@ -1,0 +1,38 @@
+{
+  "Version": {
+    "Code": "1.0.0",
+    "Model": "1.9"
+  },
+  "ProtocolType": "rpc|restful",
+  "InstanceType": "ranker",
+  "System": {
+    "Ip": "0.0.0.0",
+    "Port": 19520,
+    "Threads": [1, 0, 0, 0]
+  },
+  "RankerType": "face",
+  "Advanced": {
+    "Ranker": {
+      "NormalizeAlpha": -0.02,
+      "NormalizeBeta": 1.1,
+      "Maximum": 500000,
+      "FeatureLen": 256,
+      "SaveToFile": true,
+      "SaveToFileIterval": 10000,
+      "Static": true,
+      "DynamicLoadNumber": 400000,
+      "RepoPath": "/home/dell/face/matrix_face/latest/repo/black",
+      "ImageRootPath": "",
+      "FaceFeatureType":1 
+    },
+    "ObjectRanker": {
+      "Database": "/home/dell/dengkeqiao/repo/database",
+      "LoadThread": 4,
+      "SearchThread": 4
+    },
+    "ParseImageTimeout": 60
+  },
+  "ModelPath":{
+    "dgface":"data/dgface"
+  }
+}

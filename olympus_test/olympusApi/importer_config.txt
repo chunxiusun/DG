@@ -1,0 +1,40 @@
+{
+    "InputSlice": [
+        {
+            "ConfigType": 1,
+            "ConfigInfo": {
+                "RegisterAddress": "tcp://192.168.17.174:9801",
+                "GetMessageAddress": "tcp://192.168.17.174:9800",
+                "ServerPublicKey": "q3f@=J40lly@%jJK@oZ<0S[kJrMpGg1I$2j/F>uA",
+                "TimeoutSecond": 5,
+                "SensorInfo": {
+                    "SensorID": "12345678",
+                    "SensorFilter": {
+                        "QualityThreshold": 0.8
+                    }
+                }
+            }
+        }
+    ],
+    "OutputSlice": [
+        {
+            "ConfigType": 1,
+            "ConfigInfo": {
+                "KafkaAddress": [
+                    "192.168.2.163:9092"
+                ],
+                "KafkaTopic": "face-importer",
+                "BatchSize": 200,
+                "BatchIntv": 1,
+                "MaxThread": 100
+            }
+        }
+    ],
+    "Weed": {
+        "IsOpen": true,
+        "Host": "192.168.2.163:9333",
+        "Replication": "",
+        "Collection": "",
+        "TTLStr": "3M"
+    }
+}

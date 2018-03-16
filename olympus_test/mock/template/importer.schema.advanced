@@ -1,0 +1,217 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "additionalProperties": false,
+    "definitions": {},
+    "id": "http://example.com/example.json",
+    "properties": {
+        "InputSlice": {
+            "additionalItems": true,
+            "id": "/properties/InputSlice",
+            "items": {
+                "additionalProperties": false,
+                "id": "/properties/InputSlice/items",
+                "properties": {
+                    "ConfigInfo": {
+                        "additionalProperties": false,
+                        "id": "/properties/InputSlice/items/properties/ConfigInfo",
+                        "properties": {
+                            "GetMessageAddress": {
+                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/GetMessageAddress",
+                                "type": "string"
+                            },
+                            "RegisterAddress": {
+                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/RegisterAddress",
+                                "type": "string"
+                            },
+                            "SensorInfo": {
+                                "additionalProperties": false,
+                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/SensorInfo",
+                                "properties": {
+                                    "SensorFilter": {
+                                        "additionalProperties": false,
+                                        "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/SensorInfo/properties/SensorFilter",
+                                        "properties": {
+                                            "QualityThreshold": {
+                                                "default": 0.8,
+                                                "exclusiveMaximum": false,
+                                                "exclusiveMinimum": false,
+                                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/SensorInfo/properties/SensorFilter/properties/QualityThreshold",
+                                                "type": "number"
+                                            }
+                                        },
+                                        "required": [
+                                            "QualityThreshold"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "SensorID": {
+                                        "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/SensorInfo/properties/SensorID",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "SensorID",
+                                    "SensorFilter"
+                                ],
+                                "type": "object"
+                            },
+                            "ServerPublicKey": {
+                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/ServerPublicKey",
+                                "type": "string"
+                            },
+                            "TimeoutSecond": {
+                                "default": 5,
+                                "exclusiveMaximum": false,
+                                "exclusiveMinimum": false,
+                                "id": "/properties/InputSlice/items/properties/ConfigInfo/properties/TimeoutSecond",
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "ServerPublicKey",
+                            "SensorInfo",
+                            "RegisterAddress",
+                            "TimeoutSecond",
+                            "GetMessageAddress"
+                        ],
+                        "type": "object"
+                    },
+                    "ConfigType": {
+                        "default": 1,
+                        "exclusiveMaximum": false,
+                        "exclusiveMinimum": false,
+                        "id": "/properties/InputSlice/items/properties/ConfigType",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "ConfigType",
+                    "ConfigInfo"
+                ],
+                "type": "object"
+            },
+            "type": "array",
+            "uniqueItems": false
+        },
+        "OutputSlice": {
+            "additionalItems": true,
+            "id": "/properties/OutputSlice",
+            "items": {
+                "additionalProperties": false,
+                "id": "/properties/OutputSlice/items",
+                "properties": {
+                    "ConfigInfo": {
+                        "additionalProperties": false,
+                        "id": "/properties/OutputSlice/items/properties/ConfigInfo",
+                        "properties": {
+                            "BatchIntv": {
+                                "default": 1,
+                                "exclusiveMaximum": false,
+                                "exclusiveMinimum": false,
+                                "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/BatchIntv",
+                                "type": "integer"
+                            },
+                            "BatchSize": {
+                                "default": 200,
+                                "exclusiveMaximum": false,
+                                "exclusiveMinimum": false,
+                                "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/BatchSize",
+                                "type": "integer"
+                            },
+                            "KafkaAddress": {
+                                "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/KafkaAddress",
+                                "items": {
+                                    "default": "192.168.2.163:9092",
+                                    "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/KafkaAddress/items",
+                                    "type": "string"
+                                },
+                                "minItems": 1,
+                                "type": "array"
+                            },
+                            "KafkaTopic": {
+                                "default": "face-importer",
+                                "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/KafkaTopic",
+                                "type": "string"
+                            },
+                            "MaxThread": {
+                                "default": 100,
+                                "exclusiveMaximum": false,
+                                "exclusiveMinimum": false,
+                                "id": "/properties/OutputSlice/items/properties/ConfigInfo/properties/MaxThread",
+                                "maximum": 100,
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "KafkaTopic",
+                            "BatchSize",
+                            "BatchIntv",
+                            "KafkaAddress",
+                            "MaxThread"
+                        ],
+                        "type": "object"
+                    },
+                    "ConfigType": {
+                        "default": 1,
+                        "exclusiveMaximum": false,
+                        "exclusiveMinimum": false,
+                        "id": "/properties/OutputSlice/items/properties/ConfigType",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "ConfigType",
+                    "ConfigInfo"
+                ],
+                "type": "object"
+            },
+            "type": "array",
+            "uniqueItems": false
+        },
+        "Weed": {
+            "additionalProperties": false,
+            "id": "/properties/Weed",
+            "properties": {
+                "Collection": {
+                    "default":"",
+                    "id": "/properties/Weed/properties/Collection",
+                    "type": "string"
+                },
+                "Host": {
+                    "default":"192.168.2.163:9333",
+                    "id": "/properties/Weed/properties/Host",
+                    "type": "string"
+                },
+                "IsOpen": {
+                    "default": true,
+                    "id": "/properties/Weed/properties/IsOpen",
+                    "type": "boolean"
+                },
+                "Replication": {
+                    "default":"",
+                    "id": "/properties/Weed/properties/Replication",
+                    "type": "string"
+                },
+                "TTLStr": {
+                    "default": "3M",
+                    "id": "/properties/Weed/properties/TTLStr",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Replication",
+                "Host",
+                "Collection",
+                "IsOpen",
+                "TTLStr"
+            ],
+            "type": "object"
+        }
+    },
+    "required": [
+        "InputSlice",
+        "OutputSlice",
+        "Weed"
+    ],
+    "type": "object"
+}

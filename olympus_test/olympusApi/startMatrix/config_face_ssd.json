@@ -1,0 +1,69 @@
+{
+  "Version": {
+    "Code": "1.0.0",
+    "Model": "1.9"
+  },
+  "ProtocolType": "rpc|restful",
+  "InstanceType": "witness",
+  "System": {
+    "Ip": "0.0.0.0",
+    "Port": 19620,
+    "Threads": [0, 0, 0, 1]
+  },
+  "Pack":{
+    "Enable": true,
+    "BatchSize": 8,
+    "TimeOut": 100
+  },
+  "Feature": {
+    "Face": {
+      "Enable": true,
+      "EnableDetection": true,
+      "EnableAlignment": false,
+      "EnableQuality": false,
+      "EnableFeatureVector": false,
+      "EnableAttribute":false 
+    }
+  },
+  "Advanced": {
+    "FaceDetect": {
+      "Method": 4,
+      "BatchSize": 8,
+      "BodyRelativeFaceLeft": 0.2,
+      "BodyRelativeFaceRight": 0.2,
+      "BodyRelativeFaceTop": 0.2,
+      "BodyRelativeFaceBottom": 6.0
+    },
+    "FaceAlignment":{
+      "Method": 2,
+      "BatchSize": 8,
+      "Threshold": 0,
+      "FaceCheck": true
+    },
+    "FaceQuality": {
+      "BatchSize": 8
+    },
+    "FaceExtract": {
+      "Method": 5,
+      "BatchSize": 8,
+      "EnableConcurrency": false,
+      "EnableNormalizeFeature": true
+    },
+    "FaceAttribute": {
+      "Method": 3,
+      "BatchSize": 8
+    },
+    "ParseImageTimeout": 60
+  },
+  "AttributeMap":{
+    "Motor":"data/attribute_map/motor_attribute.json",
+    "NonMotor":"data/attribute_map/non_motor_attribute.json",
+    "Pedestrian":"data/attribute_map/pedestrian_attribute.json",
+    "LicensePlate":"data/attribute_map/license_plate_attribute.json",
+    "Face":"data/attribute_map/face_attribute.json"
+  },
+  "ModelLevel": 0,
+  "ModelPath":{
+    "dgface":"data/dgface"
+  }
+}

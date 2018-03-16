@@ -1,0 +1,240 @@
+{
+  "ClassifyAddr": "127.0.0.1:9804",
+  "FaceClassifyAddr":"127.0.0.1:9804",
+  "DetectAddr": "127.0.0.1:9800",
+  "AlignmentAddr": "127.0.0.1:9814",
+  "RankerAddr": "127.0.0.1:9808",
+  "SensorName": "face-sensor-id",
+  "SensorId": 0,
+  "RepoName": "",
+  "RepoId": 0,
+  "Source": "/home/dell/haiguan.mp4",
+  "SourceId": 1,
+
+  "ReadSrcByDemux": 1,
+
+  "DMILogin":{
+    "UserName": "admin",
+    "PassWord": "admin"
+  },
+
+  "FastForward": {
+    "InUse": true,
+    "TimeStamp": 0,
+    "TimeStampUse":false
+  },
+
+  "VideoInput": {
+    "Latency": 20000,
+    "Protocol": "tcp",
+    "MaxResolution":"1920*1080",
+    "Fps": 12,
+    "Speed": 1,
+    "Thread": 1,
+    "DMI": {
+      "Duration": "3200-"
+    },
+
+    "Decoder": {
+      "UseGPU": false,
+      "DstFormat": "PIX_FMT_BGR"
+    }
+  },
+
+  "Feature": {
+    "FaceRankerFuse":false,
+    "Render":true,
+    "Track":true,
+    "FaceAttr": true,
+    "Hotspots": true,
+    "HotspotsDetect":false,
+    "FaceSecondDetect":false,
+    "FaceRank": false,
+    "VehicleSecondDetect":true,
+    "FaceAlign": true,
+    "IsFace":true,
+    "Classify": true,
+    "Vehicle": false,
+    "NonMotor":false,
+    "Face": true,
+    "Pedestrian": false,
+    "Style": false,
+    "Color": false,
+    "Marker": false,
+    "Plate": {
+      "Classify": false,
+      "Detect": false
+    }
+  },
+  "Threshold": {
+    "Detect": {
+      "Vehicle": 0.5,
+      "NonMotor": 0.55,
+      "Pedestrian": 0.5,
+      "Face": 0.3
+    },
+    "Classify": {
+      "Vehicle": 0.2,
+      "NonMotor": 0.2,
+      "Pedestrian": 0.2,
+      "Plate": 0.2,
+      "Face": -10.5
+    },
+    "Quality":{
+      "Face":0.3,
+      "MinSizeWidth":60,
+      "MinAlignmentScore":0.3,
+      "MaxAngleRoll":20,
+      "MaxAngleYaw":20,
+      "MaxAnglePitch":20,
+      "MinBlurScore":0.1
+    },
+    "IsFace":{
+      "IsFaceMinSizeWidth":40,
+      "MinQuality":0.0
+    },
+    "Ranker":{
+      "MinFuse":0.6,
+      "MinShow":0.85
+    },
+    "Hotspots":{
+      "Proportion":0.9
+    }
+  },
+
+  "Plate": {
+    "LocalProvince": "",
+    "MergeSize": 2,
+    "MaxDistance": 2000,
+    "FrameTTL": 5,
+    "Proportion": 0.9
+  },
+  "Track":{
+    "Version":"track3.2"
+  },
+
+  "Hotspots": [],
+  "PolygonHotspots":[],
+  "Sys": {
+    "Snap":{
+      "Enable":true,
+      "FirstSnapSecond":1,
+      "UpdateSnapSecond":2,
+      "UpdateMaxOrNew":true
+    },
+    "VehicleSnapshot":-1,
+    "NonVehicleSnapshot":-1,
+    "BufferSize": 500,
+    "DetectionInterval": 2,
+    "DetectionThread":1,
+    "DetectionBatchSize":1,
+    "CheckTrackInterval": 0,
+    "ClassifyThread": 8,
+    "ClassifyBatchSize": 1,
+    "AlignThread": 4,
+    "ClassifyFirstLatency":10,
+    "AlignBatchSize": 8,
+    "BufferTTLDelete": 18,
+    "BufferTTLClassify": 4,
+    "BufferTTLSend": 0,
+    "BufferTTLClassifyUpdate": 2,
+    "ClassifyOnlyOnce": true,
+    "ClassifyMaxOrNew":true,
+    "ClassifyTopN":3,
+    "FuseMaxOrNew":true,
+    "TimeOut": 3,
+    "SendModel":0,
+    "DetectionMax":480,
+    "FaceLv2QulityModel":"svm_linear_isTopOne_isTop3_10w.model",
+    "FaceLv2QulityFunc":"zhaoxin1",
+    "GrpcImageEncode":"jpg"
+  },
+  "Render": {
+    "SnapShot": false,
+    "ShmAutoRender": false,
+    "ShowHotSpot": false,
+    "SnapWidth": 60,
+    "SnapColumn": 6,
+    "RenderStatus": "t",
+    "SnapBottomHeight":0,
+    "Interval":1
+  },
+  "DataOutput": {
+    "WindowsClient": {
+      "ClientAddr": "127.0.0.1:8765",
+      "Enable": false
+    },
+    "DataServer": {
+      "DataAddr": "127.0.0.1:9877",
+      "Enable": false
+    },
+    "FileOutput": {
+      "Enable": false,
+      "FileName": "result.txt",
+      "SaveImage": false,
+      "ImageDir": "./face-img/",
+      "CandidateNum": 5,
+      "SaveFeature": false,
+      "FeatureDir": "./face-img/"
+    },
+    "Kafka": {
+      "ProtoVersion":"1.0",
+      "Enable": true,
+      "Addr": "127.0.0.1:9092,127.0.0.1:9093,127.0.0.1:9094,127.0.0.1:9095,127.0.0.1:9096",
+      "Topic": "face-topic",
+      "MaxSizeBytes":4000000,
+      "ImageBindata":true,
+      "ImageWeedfs":false,
+      "ArceeAddr":"127.0.0.1:8502",
+      "ThumbImage":false,
+      "WeedfsAddr": "",
+      "MaxSourceImage":"9999*9999",
+      "MaxCutboardImage":"9999*9999",
+      "ThumbImageSize":"320*180"
+    }
+  },
+  "VideoOutput": {
+    "DMI": {
+      "DstAddr": "192.168.2.123",
+      "Enable": false,
+      "Speed": 1,
+      "StreamType": "live",
+      "Prefix":"dg-"
+    },
+    "Encoder": {
+      "DstBitrate":4096000,
+      "DstFps":12,
+      "DstGopSize":6,
+      "DstPreset":"",
+      "DstFormat": "PIX_FMT_H264",
+      "UseGPU": false
+    },
+    "RTP": {
+      "Enable": true,
+      "Fps": 12,
+      "Host": "127.0.0.1",
+      "Port": "9002",
+      "BitRate": 4096000
+    },
+
+    "Vis": {
+      "Enable": false,
+      "Fps": 12,
+      "Width": 1280,
+      "Height": 720
+    },
+
+    "ShareMem": {
+      "Enable": true,
+      "MemId": 10005,
+      "MemSize": 16000000,
+      "UpdateInterval": 100
+    }
+  },
+  "Debug":{
+    "Enable":false,
+    "ObjectImages":"mooc.jpg,mooc.jpg",
+    "BackgroundImage":"black_bg.jpg",
+    "ShowTimes":2
+  }
+}

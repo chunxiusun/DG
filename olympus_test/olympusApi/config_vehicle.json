@@ -1,0 +1,71 @@
+{
+  "Version": {
+    "Code": "1.0.0",
+    "Model": "1.9"
+  },
+  "ProtocolType": "rpc|restful",
+  "InstanceType": "witness",
+  "System": {
+    "Ip": "0.0.0.0",
+    "Port": 6900,
+    "Threads": [0,1]
+  },
+  "Pack":{
+    "Enable": true,
+    "BatchSize": 8,
+    "TimeOut": 100
+  },
+  "Feature": {
+    "Vehicle": {
+      "Enable": true,
+      "EnableDetection": true,
+      "EnableType": true,
+      "EnableColor": true,
+      "EnableGpuPlate": true,
+      "EnablePlateEnhanced": false,
+      "EnableMarker": true,
+      "EnableDriverBelt": true,
+      "EnableCoDriverBelt": true,
+      "EnablePhone": true,
+      "EnableDangerDetect": true,
+      "EnableFeatureVector": true,
+      "EnableNonMotorVehicle": true,
+      "EnablePedestrianAttr": true,
+      "EnablePedestrianFeature": true
+    }
+  },
+  "Advanced": {
+    "Detection": {
+      "TargetMinSize": 400.0,
+      "TargetMaxSize": 600.0
+    },
+    "PlateMxnet": {
+      "BatchSize": 1,
+      "EnableLocalProvince": false,
+      "LocalProvinceConfidence": 0.6,
+      "LocalProvinceText": "\u4eac"
+    },
+    "DriverPhone":{
+      "Threshold": 0.7
+    },
+    "DriverBelt": {
+      "Threshold": 0.7
+    },
+    "CoDriverBelt": {
+      "Threshold": 0.7
+    },
+    "MotorFeature": {
+      "DeviceType":2
+    },
+    "ParseImageTimeout": 60
+  },
+  "AttributeMap":{
+    "Path":"data/attribute_map"
+  },
+  "ModelLevel": 0,
+  "ModelPath":{
+    "dgvehicle": "data/dgvehicle",
+    "dgLP":"data/dgLP/Product",
+    "dgVehicleReID":"data/dgVehicleReID"
+  }
+}
